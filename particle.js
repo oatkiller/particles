@@ -4,18 +4,16 @@ var P = new FullBrowserCanvasAnimation({
 		this.particleSet = new ParticleSet(this);
 		this.createFillStyle();
 		this.setFillStyle();
+		this.ctx.canvas.style.backgroundColor = '#000';
 	},
 	createFillStyle : function () {
 		var ctx = this.ctx;
-		/*
-		this.gradient = ctx.createRadialGradient(0,0,0,0,0,11);
-		this.gradient.addColorStop(0,'white');
-		this.gradient.addColorStop(1,'black');
-		*/
+		var gradient = ctx.createRadialGradient(0,0,0,0,0,5);
+		gradient.addColorStop(0,'rgba(100,120,240,.5)');
+		gradient.addColorStop(.85,'rgba(100,120,240,.2)');
+		gradient.addColorStop(1,'rgba(100,120,240,0)');
 
-		this.gradient = ctx.createRadialGradient(0,0,0,0,0,10);  
-		this.gradient.addColorStop(.5, 'blue');  
-		this.gradient.addColorStop(1, 'yellow');  
+		this.gradient = gradient;
 	},
 	setFillStyle : function () {
 		this.ctx.fillStyle = this.gradient;

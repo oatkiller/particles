@@ -13,7 +13,7 @@ SwarmParticle.prototype = {
 
 	angle : Math.PI * 2,
 
-	maxAcceleration : 5,
+	maxAcceleration : 20,
 
 	getMaxAcceleration : function () {
 		return this.animation.getSecondsSinceLastDraw() * this.maxAcceleration;
@@ -53,13 +53,11 @@ SwarmParticle.prototype = {
 		this.applyVelocity();
 		
 		var ctx = this.animation.ctx;
+		ctx.save();
 
-		var gradient = ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,5);
-		gradient.addColorStop(0,'black');
-		gradient.addColorStop(1,'white');
+		ctx.translate(this.x,this.y);
+		ctx.fillRect(-5,-5,10,10);
 
-		ctx.fillStyle = gradient;
-
-		ctx.fillRect(this.x-5,this.y-5,10,10);
+		ctx.restore();
 	}
 };
