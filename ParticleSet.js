@@ -1,6 +1,6 @@
 // helps manange a pile of particles
-var ParticleSet = function (ctx) {
-	this.ctx = ctx;
+var ParticleSet = function (animation) {
+	this.animation = animation;
 	this.particles = [];
 };
 
@@ -12,7 +12,7 @@ ParticleSet.prototype = {
 		Array.prototype.splice.apply(this.particles,[0,this.particles.length].concat(remainingParticles));
 	},
 	addParticle : function (particle) {
-		particle.ctx = this.ctx;
+		particle.animation = this.animation;
 		this.particles.push(particle);
 	},
 	getParticles : function () {

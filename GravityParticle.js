@@ -19,7 +19,7 @@ GravityParticle.prototype = {
 		this.applyVelocity();
 		
 		if (!this.isDead()) {
-			var ctx = this.ctx;
+			var ctx = this.animation.ctx;
 			ctx.beginPath();
 			ctx.arc(this.x,this.y,10,0,this.angle,false);
 			ctx.fill();
@@ -50,7 +50,7 @@ GravityParticle.prototype = {
 
 	// if it goes off screen, its dead
 	isDead : function () {
-		return this.x < 0 || this.x > this.ctx.canvas.width || this.y < 0 || this.y > this.ctx.canvas.height;
+		return this.x < 0 || this.x > this.animation.ctx.canvas.width || this.y < 0 || this.y > this.animation.ctx.canvas.height;
 	},
 
 	applyGravity : function () {

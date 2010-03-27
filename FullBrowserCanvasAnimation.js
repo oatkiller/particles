@@ -186,9 +186,21 @@ FullBrowserCanvasAnimation.prototype = {
 		!this.isDrawLoopActive() && this.draw();
 	},
 
+	getFps : function () {
+		var currentTime = new Date().getTime();
+		if (this.lastDrawTime) {
+			var difference = currentTime - this.lastDrawTime,
+				fps = Math.floor(1000 / difference);
+
+			return fps;
+		}
+		return null;
+	},
+
 	// the main drawing thread
 	draw : function () {
 		this.onDraw(this.ctx);
+		this.lastDrawTime = new Date().getTime();
 
 		// clear this array out
 		this.mouseMoves.length = 0;
@@ -206,6 +218,10 @@ FullBrowserCanvasAnimation.prototype = {
 		ctx.clearRect(0,0,canvas.width,canvas.height);
 	},
 
+	getMouseMoves : function () {
+		return this.mousemoves;
+	},
+
 	// gets only the mousemoves where the mouse was down
 	// convinience method
 	getMouseDownMoves : function () {
@@ -213,6 +229,19 @@ FullBrowserCanvasAnimation.prototype = {
 			return move.mousedown;
 		},this);
 
+	},
+
+	getMouseDownVector : function () {
+		var mouseDownMoves = this.getMouseDownMoves();
+		if (mouseDownMoves.length) {
+			var oldMove = mouseDownMoves[0],
+				newMove = mouseDownMoves[mouseDownMoves.length - 1];
+
+			return new Vector(newMove.x - oldMove.x,newMove.y - oldMove.y);
+
+		} else {
+			return new Vector(0,0);
+		}
 	}
 };
 
@@ -229,5 +258,9 @@ FullBrowserCanvasAnimation.prototype = {
 		return function () {
 			return fn.apply(ctx,tackyArgs.concat(slice.call(arguments)));
 		};
+	};
+
+	Array.prototype.last = function () {
+		return this[this.length - 1];
 	};
 })();
