@@ -1,7 +1,6 @@
 /* config takes,
-stopped : defaults to false, it true, wont start drawing automatically
+stopped : defaults to false, if true, wont start drawing automatically
 onDraw : required, the method is passed a ctx, over and over again. draw cool stuff to it
-				also, ctx will have special properties, mouseX and mouseY, which represent the latest mouse coordinates, relative to the top of the canvas
 */
 
 var FullBrowserCanvasAnimation = function (config) {
@@ -12,19 +11,22 @@ var FullBrowserCanvasAnimation = function (config) {
 		}
 	}
 
+	// init this
+	this.mouseMoves = [];
+
 	// get a personal version of these, since we need to use them without context
-	'draw updateCanvasDimensions updateMouseCoordinates'.split(' ').forEach(function (property) {
+	'draw updateCanvasDimensions updateMouseCoordinates setMouseDown setMouseUp'.split(' ').forEach(function (property) {
 		this[property] = this[property].bind(this);
 	},this);
 
 	// this has to come first
 	this.initializeCanvas();
 
-	// because this calls the canvas
-	this.initializeBody();
-
 	// incase the implementer wants to do anything
 	this.onInit();
+
+	// because this calls the canvas
+	this.initializeBody();
 
 	// start the loop unless stopped was passed
 	!this.stopped && this.startDrawLoop();
@@ -46,6 +48,22 @@ FullBrowserCanvasAnimation.prototype = {
 
 	// stopped by default?
 	stopped : false,
+
+	// an array
+	// holds all mousemove data. 
+	// each element has x, y, time, and button
+	// this is refreshed at each draw
+	mouseMoves : null,
+
+	// whether or not the mouse is depressed
+	// this is recorded into each mouse move
+	mousedown : false,
+
+	// current mouse x coord
+	mouseX : null,
+
+	// current mouse y coord
+	mouseY : null,
 
 	// the timeout reference for the main draw loop
 	// should be set to undefined when inactive
@@ -79,6 +97,9 @@ FullBrowserCanvasAnimation.prototype = {
 		// update the latest mouse coordinates
 		window.addEventListener('mousemove',this.updateMouseCoordinates,false);
 
+		window.addEventListener('mousedown',this.setMouseDown,false);
+		window.addEventListener('mouseup',this.setMouseUp,false);
+
 		// go ahead and set the canvas dimensions now
 		this.updateCanvasDimensions();
 	},
@@ -104,11 +125,27 @@ FullBrowserCanvasAnimation.prototype = {
 		this.requestRedraw();
 	},
 
+	// called when the mouse is depressed
+	setMouseDown : function () {
+		this.mousedown = true;
+	},
+
+	// called when the mouse is let up
+	setMouseUp : function () {
+		this.mousedown = false;
+	},
+
 	// updates the latest mouse coordinates
 	updateMouseCoordinates : function (event) {
 		// since the canvas is sure to be in the top left, and the whole size of the window, this is easy!
-		this.ctx.mouseX = event.x;
-		this.ctx.mouseY = event.y;
+
+		// record this, in the list
+		this.mouseMoves.push({x : event.x, y : event.y, time : new Date().getTime(), mousedown : this.mousedown});
+		document.title = event.button;
+
+		// record the current cursor position
+		this.mouseX = event.x;
+		this.mouseY = event.y;
 	},
 
 	// boolean, is the loop active
@@ -140,6 +177,9 @@ FullBrowserCanvasAnimation.prototype = {
 	// the main drawing thread
 	draw : function () {
 		this.onDraw(this.ctx);
+
+		// clear this array out
+		this.mouseMoves.length = 0;
 		this.continueDrawLoop();
 	},
 
