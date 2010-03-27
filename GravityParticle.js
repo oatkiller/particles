@@ -3,6 +3,8 @@ var GravityParticle = function (mousemove) {
 	this.y = mousemove.y;
 
 	this.velocity = new Vector(0,0);
+
+	this.lastTime = new Date().getTime();
 };
 
 GravityParticle.prototype = {
@@ -30,7 +32,7 @@ GravityParticle.prototype = {
 	terminalSpeed : 30,
 
 	// the force of gravity!
-	gravity : new Vector(0,.5),
+	gravity : 10,
 
 	// keeps speed in check
 	checkSpeed : function () {
@@ -53,6 +55,13 @@ GravityParticle.prototype = {
 	},
 
 	applyGravity : function () {
-		this.velocity.add(this.gravity);
+		var currentTime = new Date().getTime(),
+			timePassed = currentTime - this.lastTime,
+			fractionOfASecond = timePassed / 1000;
+
+		var gravityApplied = fractionOfASecond * this.gravity;
+		this.velocity.add(new Vector(0,gravityApplied));
+
+		this.lastTime = currentTime;
 	}
 };
