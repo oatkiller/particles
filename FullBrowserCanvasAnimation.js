@@ -5,8 +5,12 @@ onDraw : required, the method is passed a ctx, over and over again. draw cool st
 */
 
 var FullBrowserCanvasAnimation = function (config) {
-	// get a reference to the onDraw method passed
-	this.onDraw = config && config.onDraw || function () {};
+	// copy all config stuff over
+	if (config) {
+		for (var propertyName in config) {
+			this[propertyName] = config[propertyName];
+		}
+	}
 
 	// get a personal version of these, since we need to use them without context
 	'draw updateCanvasDimensions updateMouseCoordinates'.split(' ').forEach(function (property) {
@@ -19,11 +23,30 @@ var FullBrowserCanvasAnimation = function (config) {
 	// because this calls the canvas
 	this.initializeBody();
 
+	// incase the implementer wants to do anything
+	this.onInit();
+
 	// start the loop unless stopped was passed
-	(!config || !config.stopped) && this.startDrawLoop();
+	!this.stopped && this.startDrawLoop();
 };
 
 FullBrowserCanvasAnimation.prototype = {
+
+	// gives the implementers a chance to wreck havoc
+	onInit : function () {
+	},
+
+	// when the canvas gets resized / reset
+	onResize : function () {
+	},
+
+	// default stuff to draw. nothing
+	onDraw : function () {
+	},
+
+	// stopped by default?
+	stopped : false,
+
 	// the timeout reference for the main draw loop
 	// should be set to undefined when inactive
 	drawTimeout : undefined,
@@ -75,6 +98,8 @@ FullBrowserCanvasAnimation.prototype = {
 		this.canvas.width = this.body.offsetWidth;
 		this.canvas.height = this.body.offsetHeight;
 
+		this.onResize();
+
 		// this clears the ctx, so request a redraw
 		this.requestRedraw();
 	},
@@ -116,6 +141,17 @@ FullBrowserCanvasAnimation.prototype = {
 	draw : function () {
 		this.onDraw(this.ctx);
 		this.continueDrawLoop();
+	},
+
+	// helpers
+
+	// clears the ctx
+	// this is a convinience method, for implementers
+	clearCtx : function () {
+		var ctx = this.ctx,
+			canvas = this.canvas;
+
+		ctx.clearRect(0,0,canvas.width,canvas.height);
 	}
 };
 
@@ -142,4 +178,4 @@ var P = new FullBrowserCanvasAnimation({
 		document.title = new Date() + ctx.mouseX + ' ' + ctx.mouseY + ' ' + ctx.canvas.width + ' ' + ctx.canvas.height;
 	}
 });
-*//
+*/
