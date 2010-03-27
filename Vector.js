@@ -50,7 +50,7 @@ Vector.prototype = {
 	setY : function (y) {
 		this.y = y;
 		return this;
-	}
+	},
 	add : function (otherVector) {
 		this.x += otherVector.x;
 		this.y += otherVector.y;

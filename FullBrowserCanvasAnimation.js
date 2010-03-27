@@ -192,6 +192,15 @@ FullBrowserCanvasAnimation.prototype = {
 			canvas = this.canvas;
 
 		ctx.clearRect(0,0,canvas.width,canvas.height);
+	},
+
+	// gets only the mousemoves where the mouse was down
+	// convinience method
+	getMouseDownMoves : function () {
+		return this.mouseMoves.filter(function (move) {
+			return move.mousedown;
+		},this);
+
 	}
 };
 
