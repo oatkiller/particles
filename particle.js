@@ -2,9 +2,26 @@ var particleConstructor = SwarmParticle;
 var P = new FullBrowserCanvasAnimation({
 	onInit : function () {
 		this.particleSet = new ParticleSet(this);
+		this.createFillStyle();
+		this.setFillStyle();
+	},
+	createFillStyle : function () {
+		var ctx = this.ctx;
+		/*
+		this.gradient = ctx.createRadialGradient(0,0,0,0,0,11);
+		this.gradient.addColorStop(0,'white');
+		this.gradient.addColorStop(1,'black');
+		*/
+
+		this.gradient = ctx.createRadialGradient(0,0,0,0,0,10);  
+		this.gradient.addColorStop(.5, 'blue');  
+		this.gradient.addColorStop(1, 'yellow');  
+	},
+	setFillStyle : function () {
+		this.ctx.fillStyle = this.gradient;
 	},
 	onResize : function () {
-		this.ctx.fillStyle = 'blue';
+		this.setFillStyle();
 	},
 	onDraw : function (ctx) {
 		this.clearCtx();

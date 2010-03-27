@@ -53,8 +53,13 @@ SwarmParticle.prototype = {
 		this.applyVelocity();
 		
 		var ctx = this.animation.ctx;
-		ctx.beginPath();
-		ctx.arc(this.x,this.y,10,0,this.angle,false);
-		ctx.fill();
+
+		var gradient = ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,5);
+		gradient.addColorStop(0,'black');
+		gradient.addColorStop(1,'white');
+
+		ctx.fillStyle = gradient;
+
+		ctx.fillRect(this.x-5,this.y-5,10,10);
 	}
 };
