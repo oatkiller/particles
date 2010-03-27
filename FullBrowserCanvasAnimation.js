@@ -142,12 +142,15 @@ FullBrowserCanvasAnimation.prototype = {
 	updateMouseCoordinates : function (event) {
 		// since the canvas is sure to be in the top left, and the whole size of the window, this is easy!
 
+		var x = event.clientX,
+			y = event.clientY;
+
 		// record this, in the list
-		this.mouseMoves.push({x : event.x, y : event.y, time : new Date().getTime(), mousedown : this.mousedown});
+		this.mouseMoves.push({x : x, y : y, time : new Date().getTime(), mousedown : this.mousedown});
 
 		// record the current cursor position
-		this.mouseX = event.x;
-		this.mouseY = event.y;
+		this.mouseX = x;
+		this.mouseY = y;
 	},
 
 	// boolean, is the loop active
