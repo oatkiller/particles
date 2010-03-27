@@ -39,6 +39,7 @@ FullBrowserCanvasAnimation.prototype = {
 	},
 
 	// when the canvas gets resized / reset
+	// note that ondraw gets called as well
 	onResize : function () {
 	},
 
@@ -141,7 +142,6 @@ FullBrowserCanvasAnimation.prototype = {
 
 		// record this, in the list
 		this.mouseMoves.push({x : event.x, y : event.y, time : new Date().getTime(), mousedown : this.mousedown});
-		document.title = event.button;
 
 		// record the current cursor position
 		this.mouseX = event.x;
