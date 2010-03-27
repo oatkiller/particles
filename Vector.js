@@ -20,7 +20,11 @@ Vector.prototype = {
 		return Math.sqrt((x*x) + (y*y));
 	},
 	getTheta : function () {
-		return Math.atan(this.y / this.x);
+		var theta = Math.atan(this.y / this.x);
+		if (this.x < 0) {
+			theta += Math.PI;
+		}
+		return theta;
 	},
 	getScalarAndTheta : function () {
 		return {

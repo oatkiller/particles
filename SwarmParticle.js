@@ -1,13 +1,3 @@
-// testing
-pointAt = function (ctx,p) {
-	ctx.beginPath();
-	ctx.moveTo(p.x,p.y);
-	var oldStyle = ctx.fillStyle;
-	ctx.fillStyle = 'red';
-	ctx.arc(p.x,p.y,3,0,Math.PI*2,false);
-	ctx.fill();
-	ctx.fillStyle = oldStyle;
-};
 var SwarmParticle = function (mousemove) {
 	this.x = mousemove.x;
 	this.y = mousemove.y;
@@ -23,66 +13,32 @@ SwarmParticle.prototype = {
 
 	angle : Math.PI * 2,
 
-	maxSpeed : 4,
+	maxAcceleration : 5,
 
-	maxTurnAngle : Math.PI / 2,
-
-	maxDeceleration : .1,
+	getMaxAcceleration : function () {
+		return this.animation.getSecondsSinceLastDraw() * this.maxAcceleration;
+	},
 
 	accelerate : function () {
 		// TODO fix turn radius, and speed adjustment
 		var targetMouseMove = this.animation.getCurrentMouseMove();
 
-		var targetAngle = this.getAngleBetweenMousePoints(this,targetMouseMove);
+		var vectorToPoint = this.getVectorToPoint(targetMouseMove);
 
-		if (isNaN(targetAngle)) {
-			return;
-		}
+		var vectorToNewAcceleration = this.getVectorBetweenPoints(this.velocity.getOffsets(),vectorToPoint.getOffsets());
 
-		//var distanceToTarget = this.getDistanceBetweenMousePoints(this,targetAngle);
-		//var newSpeed = distanceToTarget > this.maxSpeed ? this.maxSpeed : distanceToTarget;
+		vectorToNewAcceleration.setScalar(this.getMaxAcceleration());
 
-		this.velocity.setScalarAndTheta(10,targetAngle);
-
-/*
-
-		var myAngle = this.velocity.getTheta(),
-			myMaxTurnAngle = this.getMaxTurnAngle();
-
-		if (Math.abs(myAngle - targetAngle) > myMaxTurnAngle) { 
-			// its to big a turn, lets make the max turn
-			if (targetAngle > myAngle) {
-				// we need to add angle
-				this.velocity.setTheta(myAngle + myMaxTurnAngle);
-			} else {
-				this.velocity.setTheta(myAngle - myMaxTurnAngle);
-			}
-		} else {
-			// we can make it
-			this.velocity.setTheta(targetAngle);
-		}
-		*/
+		this.velocity.add(vectorToNewAcceleration);
 	},
 
-	getDistanceBetweenMousePoints : function (m1,m2) {
-		return Math.sqrt(Math.pow(m2.x-m1.x,2) + Math.pow(m2.y-m1.y,2));
+	getVectorToPoint : function (point) {
+		return this.getVectorBetweenPoints(this,point);
 	},
 
-	getAngleBetweenMousePoints : function (m1,m2) {
-		var theta = new Vector(m2.x-m1.x,m2.y-m1.y).getTheta();
-		// trig doesn't respect quadrants... dumb
-		if (m1.x > m2.x) {
-			theta += Math.PI;
-		}
-		return theta;
-	},
-
-	getMaxTurnAngle : function () {
-		var speed = this.velocity.getScalar(),
-			percent = speed / this.maxSpeed,
-			difference = 1 - percent;
-
-		return this.maxTurnAngle * difference;
+	getVectorBetweenPoints : function (p1,p2) {
+		var vector = new Vector(p2.x-p1.x,p2.y-p1.y);
+		return vector;
 	},
 
 	// apply the velocity to the coords
