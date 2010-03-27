@@ -45,10 +45,16 @@ var P = new FullBrowserCanvasAnimation({
 		// filter out mousemoves that had no button press
 		var mouseDownMouseMoves = this.getMouseDownMoves();
 
-		// add new particles
-		mouseDownMouseMoves.forEach(function (move) {
-			this.particleSet.addParticle(new GravityParticle(move));
-		},this);
+		if (mouseDownMouseMoves.length) {
+			// add new particles
+			mouseDownMouseMoves.forEach(function (move) {
+				this.particleSet.addParticle(new GravityParticle(move));
+			},this);
+
+		} else if (this.getMouseDown()) {
+			// the mouse is down, but not moving. use the last location
+			this.particleSet.addParticle(new GravityParticle(this.getCurrentMouseMove()));
+		}
 
 		this.particleSet.process();
 	}

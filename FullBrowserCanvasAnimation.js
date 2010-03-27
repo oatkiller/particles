@@ -60,11 +60,10 @@ FullBrowserCanvasAnimation.prototype = {
 	// this is recorded into each mouse move
 	mousedown : false,
 
+	// current mouse move
 	// current mouse x coord
-	mouseX : null,
-
-	// current mouse y coord
-	mouseY : null,
+	// an object with x, y, and mousedown (boolean)
+	currentMouseMove : null,
 
 	// the timeout reference for the main draw loop
 	// should be set to undefined when inactive
@@ -126,6 +125,14 @@ FullBrowserCanvasAnimation.prototype = {
 		this.requestRedraw();
 	},
 
+	getCurrentMouseMove : function () {
+		return this.currentMouseMove;
+	},
+
+	getMouseDown : function () {
+		return this.mousedown;
+	},
+
 	// called when the mouse is depressed
 	setMouseDown : function (event) {
 		this.mousedown = true;
@@ -146,11 +153,11 @@ FullBrowserCanvasAnimation.prototype = {
 			y = event.clientY;
 
 		// record this, in the list
-		this.mouseMoves.push({x : x, y : y, time : new Date().getTime(), mousedown : this.mousedown});
+		var mouseMove = {x : x, y : y, time : new Date().getTime(), mousedown : this.mousedown};
+		this.mouseMoves.push(mouseMove);
 
 		// record the current cursor position
-		this.mouseX = x;
-		this.mouseY = y;
+		this.currentMouseMove = mouseMove;
 	},
 
 	// boolean, is the loop active
@@ -224,12 +231,3 @@ FullBrowserCanvasAnimation.prototype = {
 		};
 	};
 })();
-
-/*
-// testing
-var P = new FullBrowserCanvasAnimation({
-	onDraw : function (ctx) {
-		document.title = new Date() + ctx.mouseX + ' ' + ctx.mouseY + ' ' + ctx.canvas.width + ' ' + ctx.canvas.height;
-	}
-});
-*/
