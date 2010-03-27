@@ -1,6 +1,8 @@
-var GravityParticle = function (x,y) {
-	this.x = x;
-	this.y = y;
+var GravityParticle = function (mousemove) {
+	this.x = mousemove.x;
+	this.y = mousemove.y;
+
+	this.velocity = new Vector(0,0);
 };
 
 GravityParticle.prototype = {
@@ -28,7 +30,7 @@ GravityParticle.prototype = {
 	terminalSpeed : 30,
 
 	// the force of gravity!
-	gravity : new Vector(0,-10),
+	gravity : new Vector(0,.5),
 
 	// keeps speed in check
 	checkSpeed : function () {

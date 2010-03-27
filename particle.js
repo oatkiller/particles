@@ -1,4 +1,6 @@
-
+/*
+var P = new FullBrowserCanvasAnimation({
+// some code to try out spiritfootprint
 var P = new FullBrowserCanvasAnimation({
 	onInit : function () {
 		this.particleSet = new ParticleSet(this.ctx);
@@ -26,5 +28,28 @@ var P = new FullBrowserCanvasAnimation({
 
 		// store the last mouse move, for next time
 		this.lastMouseMove = mouseDownMouseMoves[mouseDownMouseMoves.length - 1];
+	}
+});
+*/
+
+var P = new FullBrowserCanvasAnimation({
+	onInit : function () {
+		this.particleSet = new ParticleSet(this.ctx);
+	},
+	onResize : function () {
+		this.ctx.fillStyle = 'blue';
+	},
+	onDraw : function (ctx) {
+		this.clearCtx();
+
+		// filter out mousemoves that had no button press
+		var mouseDownMouseMoves = this.getMouseDownMoves();
+
+		// add new particles
+		mouseDownMouseMoves.forEach(function (move) {
+			this.particleSet.addParticle(new GravityParticle(move));
+		},this);
+
+		this.particleSet.process();
 	}
 });

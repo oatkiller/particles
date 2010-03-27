@@ -127,13 +127,15 @@ FullBrowserCanvasAnimation.prototype = {
 	},
 
 	// called when the mouse is depressed
-	setMouseDown : function () {
+	setMouseDown : function (event) {
 		this.mousedown = true;
+		this.updateMouseCoordinates(event);
 	},
 
 	// called when the mouse is let up
-	setMouseUp : function () {
+	setMouseUp : function (event) {
 		this.mousedown = false;
+		this.updateMouseCoordinates(event);
 	},
 
 	// updates the latest mouse coordinates
