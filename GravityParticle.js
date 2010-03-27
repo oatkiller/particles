@@ -38,7 +38,6 @@ GravityParticle.prototype = {
 	checkSpeed : function () {
 		if (this.velocity.getScalar() > this.terminalSpeed) {
 			this.velocity.setScalar(this.terminalSpeed);
-			console.debug('meet terminal speed!');
 		}
 	},
 
