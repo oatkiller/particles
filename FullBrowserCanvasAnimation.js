@@ -78,6 +78,23 @@ FullBrowserCanvasAnimation.prototype = {
 	// this will be the canvas 2d context
 	ctx : null,
 
+	// the last time a draw occured
+	// used in fps calculation
+	lastDrawTime : null,
+
+	// get this to determine how much to move stuff, usually
+	getLastDrawTime : function () {
+		return this.lastDrawTime;
+	},
+
+	getTimeSinceLastDraw : function () {
+		return new Date().getTime() - this.lastDrawTime;
+	},
+
+	getSecondsSinceLastDraw : function () {
+		return this.getTimeSinceLastDraw() / 1000;
+	},
+
 	// setup styles on the body and html node. makes calculations and styling go easier	
 	initializeBody : function () {
 		[this.body.parentNode,this.body].forEach(function (element) {
