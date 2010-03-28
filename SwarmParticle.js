@@ -13,7 +13,9 @@ SwarmParticle.prototype = {
 
 	angle : Math.PI * 2,
 
-	maxAcceleration : 20,
+	maxAcceleration : 60,
+
+	maxVelocity : 30,
 
 	getMaxAcceleration : function () {
 		return this.animation.getSecondsSinceLastDraw() * this.maxAcceleration;
@@ -41,6 +43,12 @@ SwarmParticle.prototype = {
 		return vector;
 	},
 
+	capVelocity : function () {
+		if (this.velocity.getScalar() > this.maxVelocity) {
+			this.velocity.setScalar(this.maxVelocity);
+		}
+	},
+
 	// apply the velocity to the coords
 	applyVelocity : function () {
 		var offsets = this.velocity.getOffsets();
@@ -50,6 +58,7 @@ SwarmParticle.prototype = {
 
 	draw : function () {
 		this.accelerate();
+		this.capVelocity();
 		this.applyVelocity();
 		
 		var ctx = this.animation.ctx;
