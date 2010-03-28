@@ -23,7 +23,7 @@ SwarmParticle.prototype = {
 
 	// randomly modulate a vectors angle
 	modulateAngle : function (vector) {
-		var variance = Math.PI / 6,
+		var variance = Math.PI / 8,
 			randomAngle = (variance * Math.random()) - (variance / 2);
 
 		vector.setTheta(vector.getTheta() + randomAngle);
@@ -59,6 +59,30 @@ SwarmParticle.prototype = {
 		}
 	},
 
+	getWallBoundaries : function () {
+		var canvas = this.animation.ctx.canvas;
+
+		return {
+			top : 0,
+			right : canvas.width,
+			bottom : canvas.height,
+			left : 0
+		};
+	},
+
+	collideWithWalls : function () {
+		var wallBoundaries = this.getWallBoundaries(),
+			c = .98;
+
+		if (this.x < wallBoundaries.left || this.x > wallBoundaries.right) {
+			// collided with left wall or with right wall
+			this.velocity.setX(this.velocity.getX() * -c);
+		} else if (this.y < wallBoundaries.top || this.y > wallBoundaries.bottom) {
+			// collided with top wall with bottom wall
+			this.velocity.setY(this.velocity.getY() * -c);
+		}
+	},
+
 	// apply the velocity to the coords
 	applyVelocity : function () {
 		var offsets = this.velocity.getOffsets();
@@ -68,6 +92,7 @@ SwarmParticle.prototype = {
 
 	draw : function () {
 		this.accelerate();
+		this.collideWithWalls();
 		this.capVelocity();
 		this.applyVelocity();
 		
