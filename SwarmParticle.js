@@ -13,12 +13,16 @@ SwarmParticle.prototype = {
 
 	angle : Math.PI * 2,
 
-	maxAcceleration : 60,
+	maxAcceleration : 30,
 
-	maxVelocity : 30,
+	maxVelocity : 1500,
 
 	getMaxAcceleration : function () {
 		return this.animation.getSecondsSinceLastDraw() * this.maxAcceleration;
+	},
+
+	getMaxVelocity : function () {
+		return this.maxVelocity * this.animation.getSecondsSinceLastDraw();
 	},
 
 	// randomly modulate a vectors angle
@@ -54,8 +58,9 @@ SwarmParticle.prototype = {
 	},
 
 	capVelocity : function () {
-		if (this.velocity.getScalar() > this.maxVelocity) {
-			this.velocity.setScalar(this.maxVelocity);
+		var maxVelocity = this.getMaxVelocity();
+		if (this.velocity.getScalar() > maxVelocity) {
+			this.velocity.setScalar(maxVelocity);
 		}
 	},
 
