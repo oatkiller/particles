@@ -18,6 +18,10 @@ SwarmParticle.prototype = {
 
 	maxVelocity : 1500,
 
+	maxRadius : 20,
+
+	minRadius : 4,
+
 	getRandomNumber : function (l,u) {
 		var difference = u - 1;
 		return (Math.random() * difference) - (difference / 2);
@@ -38,7 +42,7 @@ SwarmParticle.prototype = {
 
 	// randomly modulate a vectors angle
 	modulateAngle : function (vector) {
-		var variance = Math.PI / 8,
+		var variance = Math.PI / 12,
 			randomAngle = this.getRandomNumber(-variance,variance);
 			//randomAngle = (variance * Math.random()) - (variance / 2);
 
@@ -100,6 +104,27 @@ SwarmParticle.prototype = {
 		}
 	},
 
+	getRadius : function () {
+		var velocity = this.velocity.getScalar(),
+			maxVelocity = this.getMaxVelocity(),
+			r = (velocity / maxVelocity) * (this.maxRadius - this.minRadius) + this.minRadius;
+			
+		return r;
+	},
+
+	setFillStyle : function (r) {
+		var ctx = this.animation.ctx;
+
+		r = r || this.getRadius();
+
+		var gradient = ctx.createRadialGradient(0,0,0,0,0,r / 2);
+		gradient.addColorStop(0,'rgba(100,120,240,.5)');
+		gradient.addColorStop(.85,'rgba(100,120,240,.2)');
+		gradient.addColorStop(1,'rgba(100,120,240,0)');
+
+		ctx.fillStyle = gradient;
+	},
+
 	// apply the velocity to the coords
 	applyVelocity : function () {
 		var offsets = this.velocity.getOffsets();
@@ -117,7 +142,14 @@ SwarmParticle.prototype = {
 		ctx.save();
 
 		ctx.translate(this.x,this.y);
-		ctx.fillRect(-5,-5,10,10);
+
+		var r = this.getRadius();
+
+		this.setFillStyle(r);
+
+		var halfR = r / 2;
+
+		ctx.fillRect(-halfR,-halfR,r,r);
 
 		ctx.restore();
 	}
