@@ -2,7 +2,8 @@ var SwarmParticle = function (mousemove) {
 	this.x = mousemove.x;
 	this.y = mousemove.y;
 
-	this.velocity = new Vector(1,0);
+	this.velocity = this.getRandomVelocity();
+	//this.velocity = new Vector(1,0);
 
 	this.lastTime = new Date().getTime();
 };
@@ -13,9 +14,19 @@ SwarmParticle.prototype = {
 
 	angle : Math.PI * 2,
 
-	maxAcceleration : 30,
+	maxAcceleration : 70,
 
 	maxVelocity : 1500,
+
+	getRandomNumber : function (l,u) {
+		var difference = u - 1;
+		return (Math.random() * difference) - (difference / 2);
+	},
+
+	getRandomVelocity : function () {
+		var n = 30;
+		return new Vector(this.getRandomNumber(-n,n),this.getRandomNumber(-n,n));
+	},
 
 	getMaxAcceleration : function () {
 		return this.animation.getSecondsSinceLastDraw() * this.maxAcceleration;
@@ -28,7 +39,8 @@ SwarmParticle.prototype = {
 	// randomly modulate a vectors angle
 	modulateAngle : function (vector) {
 		var variance = Math.PI / 8,
-			randomAngle = (variance * Math.random()) - (variance / 2);
+			randomAngle = this.getRandomNumber(-variance,variance);
+			//randomAngle = (variance * Math.random()) - (variance / 2);
 
 		vector.setTheta(vector.getTheta() + randomAngle);
 	},
