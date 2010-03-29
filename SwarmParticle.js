@@ -35,13 +35,10 @@ SwarmParticle.prototype = {
 
 		totalVariance -= greenVariance;
 
-		//var blueVariance = this.getRandomInteger(0,totalVariance);
-
 		return {
 			r : perColorStableFactor + redVariance,
 			g : perColorStableFactor + greenVariance,
 			b : 255
-			//b : perColorStableFactor + blueVariance
 		};
 	},
 
@@ -88,6 +85,10 @@ SwarmParticle.prototype = {
 	accelerate : function () {
 		// TODO fix turn radius, and speed adjustment
 		var targetMouseMove = this.animation.getCurrentMouseMove();
+
+		if (!targetMouseMove) {
+			return;
+		}
 
 		var vectorToPoint = this.getVectorToPoint(targetMouseMove);
 
