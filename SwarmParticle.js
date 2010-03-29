@@ -27,23 +27,21 @@ SwarmParticle.prototype = {
 	getRandomRGB : function () {
 		var totalVariance = 270,
 			perColorStableFactor = 255 - (totalVariance / 3),
-			getRandomNumber = function () {
-				return Math.floor(this.getRandomNumber.apply(this,arguments));
-			}.bind(this),
-			redVariance = getRandomNumber(0,totalVariance);
+			redVariance = this.getRandomInteger(0,totalVariance);
 		
 		totalVariance -= redVariance;
 
-		var greenVariance = getRandomNumber(0,totalVariance);
+		var greenVariance = this.getRandomInteger(0,totalVariance);
 
 		totalVariance -= greenVariance;
 
-		var blueVariance = getRandomNumber(0,totalVariance);
+		//var blueVariance = this.getRandomInteger(0,totalVariance);
 
 		return {
 			r : perColorStableFactor + redVariance,
 			g : perColorStableFactor + greenVariance,
-			b : perColorStableFactor + blueVariance
+			b : 255
+			//b : perColorStableFactor + blueVariance
 		};
 	},
 
@@ -59,6 +57,10 @@ SwarmParticle.prototype = {
 	getRandomNumber : function (l,u) {
 		var difference = u - 1;
 		return (Math.random() * difference) - (difference / 2);
+	},
+
+	getRandomInteger : function () {
+		return Math.floor(this.getRandomNumber.apply(this,arguments));
 	},
 
 	getRandomVelocity : function () {
