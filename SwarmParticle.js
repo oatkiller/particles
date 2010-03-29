@@ -91,24 +91,54 @@ SwarmParticle.prototype = {
 		};
 	},
 
+	bounceConstant : -.98,
+
+	flipYVelocity : function () {
+		this.velocity.setY(this.velocity.getY() * this.bounceConstant);
+	},
+
+	flipXVelocity : function () {
+		var newVelocity = this.velocity.getX() * this.bounceConstant;
+		this.velocity.setX(newVelocity);
+	},
+
 	collideWithWalls : function () {
 		var wallBoundaries = this.getWallBoundaries(),
-			c = .98;
+			c = .98,
+			velocityX = this.velocity.getX(),
+			velocityY = this.velocity.getY();
 
-		if (this.x < wallBoundaries.left || this.x > wallBoundaries.right) {
-			// collided with left wall or with right wall
-			this.velocity.setX(this.velocity.getX() * -c);
-		} else if (this.y < wallBoundaries.top || this.y > wallBoundaries.bottom) {
-			// collided with top wall with bottom wall
-			this.velocity.setY(this.velocity.getY() * -c);
+		if (this.x > wallBoundaries.right) {
+			this.x = wallBoundaries.right;
+			if (velocityX > 0) {
+				this.flipXVelocity();
+			}
+		} 
+		if (this.x < wallBoundaries.left) {
+			this.x = wallBoundaries.left;
+			if (velocityX < 0) {
+				this.flipXVelocity()
+			}
+		} 
+		if (this.y < wallBoundaries.top) {
+			this.y = wallBoundaries.top;
+			if (velocityY < 0) {
+				this.flipYVelocity();
+			}
+		} 
+		if (this.y > wallBoundaries.bottom) {
+			this.y = wallBoundaries.bottom;
+			if (velocityY > 0) {
+				this.flipYVelocity();
+			}
 		}
 	},
 
 	getRadius : function () {
 		var velocity = this.velocity.getScalar(),
 			maxVelocity = this.getMaxVelocity(),
-			r = (velocity / maxVelocity) * (this.maxRadius - this.minRadius) + this.minRadius;
-			
+			r = ((isNaN(velocity) ? .1 : velocity) / maxVelocity) * (this.maxRadius - this.minRadius) + this.minRadius;
+
 		return r;
 	},
 
