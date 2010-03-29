@@ -5,6 +5,9 @@ var ParticleSet = function (animation) {
 };
 
 ParticleSet.prototype = {
+	onInit : function () {
+		this.animation.ctx.globalCompositeOperation = 'lighter';
+	},
 	process : function () {
 		var remainingParticles = this.getParticles().filter(function (particle) {
 			return particle.draw() !== false;

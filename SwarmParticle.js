@@ -25,17 +25,25 @@ SwarmParticle.prototype = {
 	minRadius : 4,
 
 	getRandomRGB : function () {
-		var variance = 96,
-			stable = 255 - variance,
-			getVariance = this.getRandomNumber.bind(this,0,variance),
-			getColor = function () {
-				return Math.floor(stable + getVariance());
-			};
+		var totalVariance = 270,
+			perColorStableFactor = 255 - (totalVariance / 3),
+			getRandomNumber = function () {
+				return Math.floor(this.getRandomNumber.apply(this,arguments));
+			}.bind(this),
+			redVariance = getRandomNumber(0,totalVariance);
+		
+		totalVariance -= redVariance;
+
+		var greenVariance = getRandomNumber(0,totalVariance);
+
+		totalVariance -= greenVariance;
+
+		var blueVariance = getRandomNumber(0,totalVariance);
 
 		return {
-			r : getColor(),
-			g : getColor(),
-			b : getColor()
+			r : perColorStableFactor + redVariance,
+			g : perColorStableFactor + greenVariance,
+			b : perColorStableFactor + blueVariance
 		};
 	},
 
