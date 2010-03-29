@@ -5,6 +5,8 @@ var SwarmParticle = function (mousemove) {
 	this.velocity = this.getRandomVelocity();
 	//this.velocity = new Vector(1,0);
 
+	this.color = this.getRandomRGB();
+
 	this.lastTime = new Date().getTime();
 };
 
@@ -21,6 +23,30 @@ SwarmParticle.prototype = {
 	maxRadius : 20,
 
 	minRadius : 4,
+
+	getRandomRGB : function () {
+		var variance = 96,
+			stable = 255 - variance,
+			getVariance = this.getRandomNumber.bind(this,0,variance),
+			getColor = function () {
+				return Math.floor(stable + getVariance());
+			};
+
+		return {
+			r : getColor(),
+			g : getColor(),
+			b : getColor()
+		};
+	},
+
+	getRGBAString : function (rgb,a) {
+		return 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',' + a + ')';
+	},
+
+	getRandomColor : function (alpha) {
+
+		return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+	},
 
 	getRandomNumber : function (l,u) {
 		var difference = u - 1;
@@ -148,9 +174,9 @@ SwarmParticle.prototype = {
 		r = r || this.getRadius();
 
 		var gradient = ctx.createRadialGradient(0,0,0,0,0,r / 2);
-		gradient.addColorStop(0,'rgba(100,120,240,.5)');
-		gradient.addColorStop(.85,'rgba(100,120,240,.2)');
-		gradient.addColorStop(1,'rgba(100,120,240,0)');
+		gradient.addColorStop(0,this.getRGBAString(this.color,.8));
+		gradient.addColorStop(.8,this.getRGBAString(this.color,.2));
+		gradient.addColorStop(1,this.getRGBAString(this.color,0));
 
 		ctx.fillStyle = gradient;
 	},
